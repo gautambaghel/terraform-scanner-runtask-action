@@ -1,0 +1,339 @@
+{
+    "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+    "version": "2.1.0",
+    "runs": [
+        {
+            "tool": {
+                "driver": {
+                    "name": "Checkov",
+                    "version": "2.4.50",
+                    "informationUri": "https://checkov.io",
+                    "rules": [
+                        {
+                            "id": "CKV_AWS_24",
+                            "name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+                            "shortDescription": {
+                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22"
+                            },
+                            "fullDescription": {
+                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22"
+                            },
+                            "help": {
+                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22\nResource: aws_security_group.allow_ssh_from_anywhere"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/networking-1-port-security.html"
+                        },
+                        {
+                            "id": "CKV_AWS_23",
+                            "name": "Ensure every security groups rule has a description",
+                            "shortDescription": {
+                                "text": "Ensure every security groups rule has a description"
+                            },
+                            "fullDescription": {
+                                "text": "Ensure every security groups rule has a description"
+                            },
+                            "help": {
+                                "text": "Ensure every security groups rule has a description\nResource: aws_security_group.allow_ssh_from_anywhere"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/networking-31.html"
+                        },
+                        {
+                            "id": "CKV_AWS_260",
+                            "name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+                            "shortDescription": {
+                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
+                            },
+                            "fullDescription": {
+                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
+                            },
+                            "help": {
+                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80\nResource: aws_security_group.allow_port_80_from_anywhere"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-groups-do-not-allow-ingress-from-00000-to-port-80.html"
+                        },
+                        {
+                            "id": "CKV_AWS_79",
+                            "name": "Ensure Instance Metadata Service Version 1 is not enabled",
+                            "shortDescription": {
+                                "text": "Ensure Instance Metadata Service Version 1 is not enabled"
+                            },
+                            "fullDescription": {
+                                "text": "Ensure Instance Metadata Service Version 1 is not enabled"
+                            },
+                            "help": {
+                                "text": "Ensure Instance Metadata Service Version 1 is not enabled\nResource: aws_instance.ec2"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-general-policies/bc-aws-general-31.html"
+                        },
+                        {
+                            "id": "CKV_AWS_88",
+                            "name": "EC2 instance should not have public IP.",
+                            "shortDescription": {
+                                "text": "EC2 instance should not have public IP."
+                            },
+                            "fullDescription": {
+                                "text": "EC2 instance should not have public IP."
+                            },
+                            "help": {
+                                "text": "EC2 instance should not have public IP.\nResource: aws_instance.ec2"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/public-policies/public-12.html"
+                        },
+                        {
+                            "id": "CKV_AWS_126",
+                            "name": "Ensure that detailed monitoring is enabled for EC2 instances",
+                            "shortDescription": {
+                                "text": "Ensure that detailed monitoring is enabled for EC2 instances"
+                            },
+                            "fullDescription": {
+                                "text": "Ensure that detailed monitoring is enabled for EC2 instances"
+                            },
+                            "help": {
+                                "text": "Ensure that detailed monitoring is enabled for EC2 instances\nResource: aws_instance.ec2"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-logging-policies/ensure-that-detailed-monitoring-is-enabled-for-ec2-instances.html"
+                        },
+                        {
+                            "id": "CKV_AWS_135",
+                            "name": "Ensure that EC2 is EBS optimized",
+                            "shortDescription": {
+                                "text": "Ensure that EC2 is EBS optimized"
+                            },
+                            "fullDescription": {
+                                "text": "Ensure that EC2 is EBS optimized"
+                            },
+                            "help": {
+                                "text": "Ensure that EC2 is EBS optimized\nResource: aws_instance.ec2"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-general-policies/ensure-that-ec2-is-ebs-optimized.html"
+                        }
+                    ],
+                    "organization": "bridgecrew"
+                }
+            },
+            "results": [
+                {
+                    "ruleId": "CKV_AWS_24",
+                    "ruleIndex": 0,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 25,
+                                    "endLine": 51,
+                                    "snippet": {
+                                        "text": "resource \"aws_security_group\" \"allow_ssh_from_anywhere\" {\n  name        = \"allow_ssh_from_anywhere\"\n  description = \"Allow SSH inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"SSH from anywhere\"\n    from_port        = 22\n    to_port          = 22\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows SSH access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_ssh_from_anywhere\"\n  }\n}\n"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "CKV_AWS_23",
+                    "ruleIndex": 1,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "Ensure every security groups rule has a description"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 25,
+                                    "endLine": 51,
+                                    "snippet": {
+                                        "text": "resource \"aws_security_group\" \"allow_ssh_from_anywhere\" {\n  name        = \"allow_ssh_from_anywhere\"\n  description = \"Allow SSH inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"SSH from anywhere\"\n    from_port        = 22\n    to_port          = 22\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows SSH access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_ssh_from_anywhere\"\n  }\n}\n"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "CKV_AWS_260",
+                    "ruleIndex": 2,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 53,
+                                    "endLine": 79,
+                                    "snippet": {
+                                        "text": "resource \"aws_security_group\" \"allow_port_80_from_anywhere\" {\n  name        = \"allow_port_80_from_anywhere\"\n  description = \"Allow port 80 inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"HTTP from anywhere\"\n    from_port        = 80\n    to_port          = 80\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows HTTP access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_port_80_from_anywhere\"\n  }\n}\n"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "CKV_AWS_23",
+                    "ruleIndex": 1,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "Ensure every security groups rule has a description"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 53,
+                                    "endLine": 79,
+                                    "snippet": {
+                                        "text": "resource \"aws_security_group\" \"allow_port_80_from_anywhere\" {\n  name        = \"allow_port_80_from_anywhere\"\n  description = \"Allow port 80 inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"HTTP from anywhere\"\n    from_port        = 80\n    to_port          = 80\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows HTTP access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_port_80_from_anywhere\"\n  }\n}\n"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "CKV_AWS_79",
+                    "ruleIndex": 3,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "Ensure Instance Metadata Service Version 1 is not enabled"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 92,
+                                    "endLine": 116,
+                                    "snippet": {
+                                        "text": "resource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "CKV_AWS_88",
+                    "ruleIndex": 4,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "EC2 instance should not have public IP."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 92,
+                                    "endLine": 116,
+                                    "snippet": {
+                                        "text": "resource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "CKV_AWS_126",
+                    "ruleIndex": 5,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "Ensure that detailed monitoring is enabled for EC2 instances"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 92,
+                                    "endLine": 116,
+                                    "snippet": {
+                                        "text": "resource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "CKV_AWS_135",
+                    "ruleIndex": 6,
+                    "level": "error",
+                    "attachments": [],
+                    "message": {
+                        "text": "Ensure that EC2 is EBS optimized"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "main.tf"
+                                },
+                                "region": {
+                                    "startLine": 92,
+                                    "endLine": 116,
+                                    "snippet": {
+                                        "text": "resource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

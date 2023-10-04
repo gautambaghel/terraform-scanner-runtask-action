@@ -1,0 +1,23 @@
+{
+    "name": "sarif-results-to-runtask",
+    "version": "1.0.0",
+    "description": "Converts SARIF results to structured Terraform Cloud run task outputs",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gautambaghel/sarif-results-to-runtask.git"
+    },
+    "keywords": [],
+    "author": "gautambaghel",
+    "license": "MPL",
+    "bugs": {
+        "url": "https://github.com/gautambaghel/sarif-results-to-runtask/issues"
+    },
+    "homepage": "https://github.com/gautambaghel/sarif-results-to-runtask#readme",
+    "dependencies": {
+        "@actions/core": "^1.2.5"
+    }
+}
