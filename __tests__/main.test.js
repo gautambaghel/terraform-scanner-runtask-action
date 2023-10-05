@@ -24,7 +24,7 @@ describe('action', () => {
 
   it('check if output filename provided', async () => {
     // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => { 
+    getInputMock.mockImplementation(name => {
       switch (name) {
         case 'sarif-filename':
           return 'examples/input.sarif'
@@ -33,7 +33,7 @@ describe('action', () => {
         default:
           return ''
       }
-     })
+    })
 
     await main.run()
     expect(runMock).toHaveReturned()
