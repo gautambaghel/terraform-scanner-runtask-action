@@ -12,9 +12,6 @@
                         {
                             "id": "CKV_AWS_24",
                             "name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
-                            "shortDescription": {
-                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22"
-                            },
                             "fullDescription": {
                                 "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22"
                             },
@@ -22,41 +19,26 @@
                                 "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22\nResource: aws_security_group.allow_ssh_from_anywhere"
                             },
                             "defaultConfiguration": {
-                                "level": "error"
+                                "level": "note"
                             },
                             "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/networking-1-port-security.html"
                         },
                         {
                             "id": "CKV_AWS_23",
                             "name": "Ensure every security groups rule has a description",
-                            "shortDescription": {
-                                "text": "Ensure every security groups rule has a description"
-                            },
-                            "fullDescription": {
-                                "text": "Ensure every security groups rule has a description"
-                            },
                             "help": {
                                 "text": "Ensure every security groups rule has a description\nResource: aws_security_group.allow_ssh_from_anywhere"
                             },
                             "defaultConfiguration": {
-                                "level": "error"
+                                "level": "warning"
                             },
                             "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/networking-31.html"
                         },
                         {
                             "id": "CKV_AWS_260",
                             "name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
-                            "shortDescription": {
-                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
-                            },
-                            "fullDescription": {
-                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
-                            },
-                            "help": {
-                                "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80\nResource: aws_security_group.allow_port_80_from_anywhere"
-                            },
                             "defaultConfiguration": {
-                                "level": "error"
+                                "level": "none"
                             },
                             "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-groups-do-not-allow-ingress-from-00000-to-port-80.html"
                         },
@@ -90,7 +72,7 @@
                                 "text": "EC2 instance should not have public IP.\nResource: aws_instance.ec2"
                             },
                             "defaultConfiguration": {
-                                "level": "error"
+                                "level": "none"
                             },
                             "helpUri": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/public-policies/public-12.html"
                         },
@@ -186,7 +168,7 @@
                 {
                     "ruleId": "CKV_AWS_260",
                     "ruleIndex": 2,
-                    "level": "error",
+                    "level": "warning",
                     "attachments": [],
                     "message": {
                         "text": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
@@ -236,7 +218,7 @@
                 {
                     "ruleId": "CKV_AWS_79",
                     "ruleIndex": 3,
-                    "level": "error",
+                    "level": "note",
                     "attachments": [],
                     "message": {
                         "text": "Ensure Instance Metadata Service Version 1 is not enabled"
@@ -261,7 +243,7 @@
                 {
                     "ruleId": "CKV_AWS_88",
                     "ruleIndex": 4,
-                    "level": "error",
+                    "level": "none",
                     "attachments": [],
                     "message": {
                         "text": "EC2 instance should not have public IP."
