@@ -44,11 +44,12 @@ need to perform some initial setup steps before you can develop your action.
    ...
    ```
 
-### How to run & test this Action locally
+### Run this Action locally
 
 ```
 env INPUT_SARIF-FILENAME="examples/input.sarif" node src/index.js
 ```
+
 ## Usage
 
 To include the action in a workflow in another repository, you can use the

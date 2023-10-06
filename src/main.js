@@ -16,16 +16,16 @@ const getImpactArray = impact => {
   }
 }
 
-const getImpactFromLevel = impact => {
-  switch (impact) {
+const getStatusFromLevel = status => {
+  switch (status) {
     case 3:
-      return 'error'
+      return 'failed'
     case 2:
-      return 'warning'
+      return 'failed'
     case 1:
-      return 'info'
+      return 'passed'
     default:
-      return 'none'
+      return 'passed'
   }
 }
 
@@ -96,8 +96,7 @@ const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
     // set the overall status to the highest level of issue
     if (severityNum > overallStatusLevel) {
       core.debug(
-        'Current highest impact: ',
-        getImpactFromLevel(overallStatusLevel)
+        `Current impact status: ${getStatusFromLevel(overallStatusLevel)}`
       )
       overallStatusLevel = severityNum
     }
@@ -129,7 +128,7 @@ const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
     return resultItem
   })
 
-  const status = getImpactFromLevel(overallStatusLevel)
+  const status = getStatusFromLevel(overallStatusLevel)
   // construct the full SARIF content
   const runTaskJSONContent = {
     data: {

@@ -1,6 +1,8 @@
 const express = require('express')
-const createHmac = require('crypto')
+const crypto = require('crypto-js')
 const fs = require('fs')
+const { run } = require('./main')
+const { scan } = require('./scan')
 
 /**
  * The server function for the action.
@@ -14,19 +16,17 @@ async function server() {
   app.use(express.json(), validateHmac)
 
   app.post('/', async (req, res) => {
-    // console.log(`Run Task payload\n${JSON.stringify(req.body, null, 2)}`)
-
-    // Send a 200 to tell Terraform Cloud that we recevied the Run Task
+    // Send a 200 to tell Terraform Cloud that we recevied the run task
     // Documentation - https://www.terraform.io/cloud-docs/api-docs/run-tasks-integration#run-task-request
     res.sendStatus(200)
 
-    // When a user adds a new Run Task to their Terraform Cloud organization, Terraform Cloud will attempt to
-    // validate the Run Task address and HMAC by sending a payload with dummy data. This condition will have to be accounted for.
+    // When a user adds a new run task to their Terraform Cloud organization, Terraform Cloud will attempt to
+    // validate the run task address and HMAC by sending a payload with dummy data. This condition will have to be accounted for.
     if (req.body.access_token !== 'test-token') {
-      // Segment Run Tasks based on stage
+      // Segment run tasks based on stage
       if (req.body.stage === 'pre_plan') {
         // Download the config files locally
-        // API Documentation - https://www.terraform.io/cloud-docs/api-docs/configuration-versions#download-configuration-files
+        // Documentation - https://www.terraform.io/cloud-docs/api-docs/configuration-versions#download-configuration-files
         const {
           configuration_version_download_url,
           access_token,
@@ -37,20 +37,18 @@ async function server() {
         } = req.body
         await downloadConfig(configuration_version_download_url, access_token)
         console.log(
-          `Config downloaded for Workspace: ${organization_name}/${workspace_name}, Run: ${run_id}\n downloaded at${process.cwd()}`
+          `Config downloaded for Workspace: ${organization_name}/${workspace_name}, Run: ${run_id} downloaded at ${process.cwd()}!\n`
         )
 
         // Send the results back to Terraform Cloud
-        await sendCallback(
-          task_result_callback_url,
-          access_token,
-          'passed',
-          'Hello World',
-          'http://example.com/runtask/QxZyl'
-        )
+        run()
+        // TODO: fix this
+        const rawdata = fs.readFileSync('examples/output.json')
+        const payload = JSON.parse(rawdata)
+        await sendCallback(task_result_callback_url, access_token, payload)
       } else if (req.body.stage === 'post_plan') {
-        // Do some processing on the Run Task request
-        // Schema Documentation - https://www.terraform.io/cloud-docs/api-docs/run-tasks-integration#request-body
+        // Process the run task request
+        // Documentation - https://www.terraform.io/cloud-docs/api-docs/run-tasks-integration#request-body
         const {
           plan_json_api_url,
           access_token,
@@ -60,22 +58,22 @@ async function server() {
           task_result_callback_url
         } = req.body
         const planJson = await getPlan(plan_json_api_url, access_token)
+        fs.writeFileSync(
+          'terraformPlan.json',
+          JSON.stringify(planJson, null, 2)
+        )
         console.log(
-          `Plan ouput for ${organization_name}/${workspace_id}/${run_id}\n${JSON.stringify(
-            planJson,
-            null,
-            2
-          )}`
+          `Plan ouput for ${organization_name}/${workspace_id}, Run: ${run_id} saved!\n}`
         )
 
         // Send the results back to Terraform Cloud
-        await sendCallback(
-          task_result_callback_url,
-          access_token,
-          'passed',
-          'Hello World',
-          'http://example.com/runtask/QxZyl'
-        )
+        run()
+        scan()
+        // TODO: fix this
+        const rawdata = fs.readFileSync('examples/output.json')
+        const payload = JSON.parse(rawdata)
+        await sendCallback(task_result_callback_url, access_token, payload)
+        fs.unlinkSync('terraformPlan.json')
       }
     }
   })
@@ -87,9 +85,9 @@ async function server() {
 
 async function validateHmac(req, res, next) {
   const hmacKey = process.env.HMAC_KEY || 'abc123'
-  const computedHmac = createHmac('sha512', hmacKey)
-    .update(JSON.stringify(req.body))
-    .digest('hex')
+  const computedHmac = crypto
+    .HmacSHA512(JSON.stringify(req.body), hmacKey)
+    .toString(crypto.enc.Hex)
   const remoteHmac = await req.get('x-tfc-task-signature')
   // If the HMAC validation fails, log the error and send an HTTP Status Code 401, Unauthorized
   // Currently undocumented but 401 is the expected response for an invalid HMAC
@@ -102,30 +100,18 @@ async function validateHmac(req, res, next) {
   next()
 }
 
-async function sendCallback(callbackUrl, accessToken, status, message, url) {
-  // Format the payload for the callback
-  // Schema Documentation - https://www.terraform.io/cloud-docs/api-docs/run-tasks-integration#request-body-1
-  const data = JSON.stringify({
-    data: {
-      type: 'task-results',
-      attributes: {
-        status,
-        message,
-        url
-      }
-    }
-  })
-
+async function sendCallback(callbackUrl, accessToken, payload) {
   const options = {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/vnd.api+json',
       Authorization: `Bearer ${accessToken}`
     },
-    body: data
+    body: JSON.stringify(payload)
   }
 
-  await fetch(callbackUrl, options)
+  const res = await fetch(callbackUrl, options)
+  console.log(await res.json())
 }
 
 async function getPlan(url, accessToken) {

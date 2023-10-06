@@ -2,17 +2,17 @@
  * Unit tests for the action's entrypoint, src/index.ts
  */
 
-const { run } = require('../src/main')
+const { server } = require('../src/server')
 
 // Mock the action's entrypoint
-jest.mock('../src/main', () => ({
-  run: jest.fn()
+jest.mock('../src/server', () => ({
+  server: jest.fn()
 }))
 
 describe('index', () => {
   it('calls run when imported', async () => {
     require('../src/index')
 
-    expect(run).toHaveBeenCalled()
+    expect(server).toHaveBeenCalled()
   })
 })

@@ -2,7 +2,7 @@
   "data": {
     "type": "task-results",
     "attributes": {
-      "status": "error",
+      "status": "failed",
       "message": "7 issues found",
       "url": "https://checkov.io"
     },
