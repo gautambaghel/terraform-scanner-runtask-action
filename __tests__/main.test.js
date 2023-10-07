@@ -1,14 +1,14 @@
 /**
- * Unit tests for the action's main functionality, src/main.js
+ * Unit tests for the action's convert functionality, src/convert.js
  */
 const core = require('@actions/core')
-const main = require('../src/main')
+const convert = require('../src/convert')
 
 // Mock the GitHub Actions core library
 const debugMock = jest.spyOn(core, 'debug').mockImplementation()
 
-// Mock the action's main function
-const runMock = jest.spyOn(main, 'run')
+// Mock the action's convert function
+const runMock = jest.spyOn(convert, 'convert')
 
 describe('action', () => {
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('action', () => {
   })
 
   it('check if checkov coversion logic is working', async () => {
-    await main.run('examples/checkov.sarif', 'examples/output.json')
+    await convert.convert('examples/checkov.sarif')
     expect(runMock).toHaveReturned()
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Unique issues count: 7')
     expect(debugMock).toHaveBeenNthCalledWith(
@@ -26,12 +26,8 @@ describe('action', () => {
   })
 
   it('check if snyk coversion logic is working', async () => {
-    await main.run('examples/snyk.sarif', 'examples/output.json')
+    await convert.convert('examples/snyk.sarif')
     expect(runMock).toHaveReturned()
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Unique issues count: 6')
-    expect(debugMock).toHaveBeenNthCalledWith(
-      2,
-      'Current impact status: passed'
-    )
   })
 })

@@ -67,7 +67,7 @@ const getBodyFromResults = (id, resultInstances) => {
         }
         if (resultsArray[i]?.locations[j]?.physicalLocation?.region?.endLine) {
           builder = builder.concat(
-            `ending at **'${resultsArray[i].locations[j].physicalLocation.region.endLine}** `
+            `ending at **${resultsArray[i].locations[j].physicalLocation.region.endLine}** `
           )
         }
         if (
@@ -149,9 +149,9 @@ const convertSarifRuleToRunTaskBlock = (
 }
 
 /**
- * The main function
+ * The convert function
  */
-function run(sarifInputFileName) {
+function convert(sarifInputFileName) {
   let results = {}
 
   const rawdata = fs.readFileSync(sarifInputFileName)
@@ -174,8 +174,9 @@ function run(sarifInputFileName) {
   )
   // construct the full SARIF content
   const status = getStatusFromLevel(overallStatusLevel)
+  return [runTaskBlock, status, rules.length, resultInstances.length]
 }
 
 module.exports = {
-  run
+  convert
 }

@@ -32983,11 +32983,13 @@ function vary (res, field) {
 
 /***/ }),
 
-/***/ 1713:
+/***/ 4255:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186)
 const fs = __nccwpck_require__(7147)
+
+let overallStatusLevel = 0
 
 // Returns the issue label, level and numeric value respectively
 // based on the acceptable input in Terraform Cloud
@@ -33030,60 +33032,68 @@ const getDescription = (shortDescription, fullDescription, help) => {
 }
 
 const getBodyFromResults = (id, resultInstances) => {
-  let body = ''
+  let builder = ''
   const resultsArray = resultInstances.filter(result => result.ruleId === id)
 
   for (let i = 0; i < resultsArray.length; i++) {
-    const locations = resultsArray[i].locations
-    for (let j = 0; j < locations.length; j++) {
-      let builder = `### Issue in ${resultsArray[i].locations[j].physicalLocation.artifactLocation.uri} file `
-      builder = builder.concat(
-        `starting from **${resultsArray[i].locations[j].physicalLocation.region.startLine}** `
-      )
-      builder = builder.concat(
-        `ending at **'${resultsArray[i].locations[j].physicalLocation.region.endLine}** `
-      )
-      builder = builder.concat(
-        '\n\n```\n',
-        resultsArray[i].locations[j].physicalLocation.region.snippet.text,
-        '\n```\n'
-      )
+    if (resultsArray[i]?.locations) {
+      const locations = resultsArray[i].locations
+      for (let j = 0; j < locations.length; j++) {
+        if (
+          resultsArray[i]?.locations[j]?.physicalLocation?.artifactLocation?.uri
+        ) {
+          builder = builder.concat(
+            `### Issue in ${resultsArray[i].locations[j].physicalLocation.artifactLocation.uri} file `
+          )
+        }
+        if (
+          resultsArray[i]?.locations[j]?.physicalLocation?.region?.startLine
+        ) {
+          builder = builder.concat(
+            `starting from **${resultsArray[i].locations[j].physicalLocation.region.startLine}** `
+          )
+        }
+        if (resultsArray[i]?.locations[j]?.physicalLocation?.region?.endLine) {
+          builder = builder.concat(
+            `ending at **${resultsArray[i].locations[j].physicalLocation.region.endLine}** `
+          )
+        }
+        if (
+          resultsArray[i]?.locations[j]?.physicalLocation?.region?.snippet?.text
+        ) {
+          builder = builder.concat(
+            '\n\n```\n',
+            resultsArray[i].locations[j].physicalLocation.region.snippet.text,
+            '\n```\n'
+          )
+        }
 
-      body = body.concat(builder, '\n\n')
+        builder = builder.concat(builder, '\n\n')
+      }
     }
   }
 
-  return body
+  return builder
 }
 
-const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
-  let results = {}
-
-  const rawdata = fs.readFileSync(inputFileName)
-  results = JSON.parse(rawdata)
-  console.log(
-    'Pipeline Scan results file found and parsed - validated JSON file'
-  )
-
-  const rules = results.runs[0].tool.driver.rules
-  console.log(`Unique issues count: ${rules.length}`)
-  core.debug(`Unique issues count: ${rules.length}`)
-
-  const resultInstances = results.runs[0].results
-  console.log(`Total issues present: ${resultInstances.length}`)
-
-  let overallStatusLevel = 0
-
+const convertSarifRuleToRunTaskBlock = (
+  inputFileName,
+  rules,
+  resultInstances
+) => {
   // convert to structure run tasks json
   const sRunTaskResults = rules.map(rule => {
     // get the severity according to SARIF
-    const impactInfoArray = getImpactArray(rule.defaultConfiguration.level)
-    const severityLabel = impactInfoArray[0]
-    const severityLevel = impactInfoArray[1]
-    const severityNum = impactInfoArray[2]
+    const impactArray = getImpactArray(rule.defaultConfiguration.level)
+    const severityLabel = impactArray[0]
+    const severityLevel = impactArray[1]
+    const severityNum = impactArray[2]
     // set the overall status to the highest level of issue
     if (severityNum > overallStatusLevel) {
       core.debug(
+        `Current impact status: ${getStatusFromLevel(overallStatusLevel)}`
+      )
+      console.log(
         `Current impact status: ${getStatusFromLevel(overallStatusLevel)}`
       )
       overallStatusLevel = severityNum
@@ -33094,7 +33104,14 @@ const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
       rule.fullDescription,
       rule.help
     )
-    const body = getBodyFromResults(rule.id, resultInstances, description)
+
+    let body
+    if (inputFileName.includes('snyk.sarif') && rule?.help?.markdown) {
+      body = rule.help.markdown
+    } else {
+      body = getBodyFromResults(rule.id, resultInstances)
+    }
+
     // populate issue
     const resultItem = {
       type: 'task-result-outcomes',
@@ -33116,57 +33133,40 @@ const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
     return resultItem
   })
 
-  const status = getStatusFromLevel(overallStatusLevel)
-  // construct the full SARIF content
-  const runTaskJSONContent = {
-    data: {
-      type: 'task-results',
-      attributes: {
-        status,
-        message: `${rules.length} issues found`,
-        url: results.runs[0].tool.driver.informationUri
-      },
-      relationships: {
-        outcomes: {
-          data: sRunTaskResults
-        }
-      }
-    }
-  }
-
-  // save to file
-  fs.writeFileSync(outputFileName, JSON.stringify(runTaskJSONContent, null, 2))
-  console.log(`Run Task output file created: ${outputFileName}`)
+  return sRunTaskResults
 }
 
 /**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
+ * The convert function
  */
-async function run() {
-  try {
-    const sarifInputFileName = core.getInput('sarif-filename', {
-      required: true
-    })
-    let sRunTaskOutputFileName = core.getInput('runtask-filename', {
-      required: false
-    })
-    if (!sRunTaskOutputFileName) {
-      sRunTaskOutputFileName = 'examples/output.json'
-      core.debug('Output file used: examples/output.json')
-    } else {
-      core.debug(`Output file used: ${sRunTaskOutputFileName}`)
-    }
+function convert(sarifInputFileName) {
+  let results = {}
 
-    convertSarifFileToRunTaskFile(sarifInputFileName, sRunTaskOutputFileName)
-    core.setOutput('runtask-filename', sRunTaskOutputFileName)
-  } catch (error) {
-    core.setFailed(error.message)
-  }
+  const rawdata = fs.readFileSync(sarifInputFileName)
+  results = JSON.parse(rawdata)
+  console.log(
+    'Pipeline Scan results file found and parsed - validated JSON file'
+  )
+
+  const rules = results.runs[0].tool.driver.rules
+  console.log(`Unique issues count: ${rules.length}`)
+  core.debug(`Unique issues count: ${rules.length}`)
+
+  const resultInstances = results.runs[0].results
+  console.log(`Total issues present: ${resultInstances.length}`)
+
+  const runTaskBlock = convertSarifRuleToRunTaskBlock(
+    sarifInputFileName,
+    rules,
+    resultInstances
+  )
+  // construct the full SARIF content
+  const status = getStatusFromLevel(overallStatusLevel)
+  return [runTaskBlock, status, rules.length, resultInstances.length]
 }
 
 module.exports = {
-  run
+  convert
 }
 
 
@@ -33179,7 +33179,7 @@ const core = __nccwpck_require__(2186)
 const express = __nccwpck_require__(1204)
 const crypto = __nccwpck_require__(4134)
 const fs = __nccwpck_require__(7147)
-const { run } = __nccwpck_require__(1713)
+const { convert } = __nccwpck_require__(4255)
 
 /**
  * The server function for the action.
@@ -33189,17 +33189,6 @@ async function server() {
   try {
     const app = express()
     const port = process.env.PORT || 3000
-
-    // Validate action inputs
-    let sRunTaskOutputFileName = core.getInput('runtask-filename', {
-      required: false
-    })
-    if (!sRunTaskOutputFileName) {
-      sRunTaskOutputFileName = 'examples/output.json'
-      core.debug('Output file used: examples/output.json')
-    } else {
-      core.debug(`Output file used: ${sRunTaskOutputFileName}`)
-    }
 
     // Configure Express middleware to parse the JSON body and validate the HMAC
     app.use(express.json(), validateHmac)
@@ -33226,14 +33215,11 @@ async function server() {
           } = req.body
           await downloadConfig(configuration_version_download_url, access_token)
           console.log(
-            `Config downloaded for Workspace: ${organization_name}/${workspace_name}, Run: ${run_id} downloaded at ${process.cwd()}!\n`
+            `Config downloaded for Workspace: ${organization_name}/${workspace_name}, Run: ${run_id} retrieved at ${process.cwd()}!\n`
           )
 
           // Send the results back to Terraform Cloud
-          await scan(sRunTaskOutputFileName)
-          const rawdata = fs.readFileSync(sRunTaskOutputFileName)
-          const payload = JSON.parse(rawdata)
-          await sendCallback(task_result_callback_url, access_token, payload)
+          await scan(task_result_callback_url, access_token)
         } else if (req.body.stage === 'post_plan') {
           // Process the run task request
           // Documentation - https://www.terraform.io/cloud-docs/api-docs/run-tasks-integration#request-body
@@ -33251,15 +33237,11 @@ async function server() {
             JSON.stringify(planJson, null, 2)
           )
           console.log(
-            `Plan ouput for ${organization_name}/${workspace_id}, Run: ${run_id} saved!\n}`
+            `Plan ouput for ${organization_name}/${workspace_id}, Run: ${run_id} retrieved!\n}`
           )
 
           // Send the results back to Terraform Cloud
-          await scan(
-            sRunTaskOutputFileName,
-            task_result_callback_url,
-            access_token
-          )
+          await scan(task_result_callback_url, access_token)
         }
       }
     })
@@ -33272,30 +33254,73 @@ async function server() {
   }
 }
 
-async function executeCmds(cmd) {
+async function executeCmds(cmd, task_result_callback_url, access_token) {
   const exec = (__nccwpck_require__(2081).exec)
   await exec(cmd, function (error, stdout, stderr) {
+    // Wait for the scanners to finish
     console.log('stdout:', stdout)
     console.log('stderr:', stderr)
     if (error !== null) {
       console.log('exec error:', error)
     }
+
+    // Call the conversion logic (sarif -> runtask)
+    const checkovResults = convert('results.sarif')
+    const snykResults = convert('snyk.sarif')
+
+    // Retrieve the scan results
+    const results = checkovResults[0].concat(snykResults[0])
+    const status =
+      checkovResults[1] === 'failed' || snykResults[1] === 'failed'
+        ? 'failed'
+        : 'passed'
+    const totalIssues = checkovResults[2] + snykResults[2]
+    const totalIssueOccurence = checkovResults[3] + snykResults[3]
+
+    // Create the JSON to respond to Terraform Cloud
+    const runTaskJSONContent = {
+      data: {
+        type: 'task-results',
+        attributes: {
+          status,
+          message: `${totalIssues} issues found, total ${totalIssueOccurence} issue occurences`,
+          url: `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_ACTION_REPOSITORY}/actions`
+        },
+        relationships: {
+          outcomes: {
+            data: results
+          }
+        }
+      }
+    }
+
+    // Respond back to Terraform Cloud
+    const runTaskOutput = sendCallback(
+      task_result_callback_url,
+      access_token,
+      runTaskJSONContent
+    )
+    core.setOutput('runtask-output', runTaskOutput)
   })
 }
 
-async function scan(
-  sRunTaskOutputFileName,
-  task_result_callback_url,
-  access_token
-) {
+async function scan(task_result_callback_url, access_token) {
   const plan = 'terraformPlan.json'
   const options = '--compact --quiet'
-  const cmd = `docker run --tty --volume ${process.cwd()}:/tf --workdir /tf bridgecrew/checkov -f ${plan} ${options} -o sarif && mv results.sarif ${sRunTaskOutputFileName}`
-  await executeCmds(cmd)
-  await run('results.sarif', sRunTaskOutputFileName)
-  const rawdata = fs.readFileSync(sRunTaskOutputFileName)
-  const payload = JSON.parse(rawdata)
-  await sendCallback(task_result_callback_url, access_token, payload)
+  let cmdBuilder = `docker run --tty --volume ${process.cwd()}:/tf --workdir `
+  cmdBuilder = cmdBuilder.concat(
+    `/tf bridgecrew/checkov -f ${plan} ${options} -o sarif; `
+  )
+  if (process.env.SNYK_TOKEN) {
+    cmdBuilder = cmdBuilder.concat(
+      `docker run --tty --volume ${process.cwd()}:/tf --workdir /tf `
+    )
+    cmdBuilder = cmdBuilder.concat(
+      `-e SNYK_TOKEN=${process.env.SNYK_TOKEN} snyk/snyk:alpine snyk iac test `
+    )
+    cmdBuilder = cmdBuilder.concat(`${plan} --sarif-file-output=snyk.sarif`)
+  }
+  await executeCmds(cmdBuilder, task_result_callback_url, access_token)
 }
 
 async function validateHmac(req, res, next) {
@@ -33326,7 +33351,7 @@ async function sendCallback(callbackUrl, accessToken, payload) {
   }
 
   const res = await fetch(callbackUrl, options)
-  console.log(await res.json())
+  return await res.json()
 }
 
 async function getPlan(url, accessToken) {

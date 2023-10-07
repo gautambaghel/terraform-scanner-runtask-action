@@ -2,7 +2,7 @@ const core = require('@actions/core')
 const express = require('express')
 const crypto = require('crypto-js')
 const fs = require('fs')
-const { run } = require('./main')
+const { convert } = require('./convert')
 
 /**
  * The server function for the action.
@@ -80,18 +80,48 @@ async function server() {
 async function executeCmds(cmd, task_result_callback_url, access_token) {
   const exec = require('child_process').exec
   await exec(cmd, function (error, stdout, stderr) {
+    // Wait for the scanners to finish
     console.log('stdout:', stdout)
     console.log('stderr:', stderr)
     if (error !== null) {
       console.log('exec error:', error)
     }
-    run('results.sarif', 'output.json')
-    run('snyk.sarif', 'output.json')
-    const rawdata = fs.readFileSync('output.json')
+
+    // Call the conversion logic (sarif -> runtask)
+    const checkovResults = convert('results.sarif')
+    const snykResults = convert('snyk.sarif')
+
+    // Retrieve the scan results
+    const results = checkovResults[0].concat(snykResults[0])
+    const status =
+      checkovResults[1] === 'failed' || snykResults[1] === 'failed'
+        ? 'failed'
+        : 'passed'
+    const totalIssues = checkovResults[2] + snykResults[2]
+    const totalIssueOccurence = checkovResults[3] + snykResults[3]
+
+    // Create the JSON to respond to Terraform Cloud
+    const runTaskJSONContent = {
+      data: {
+        type: 'task-results',
+        attributes: {
+          status,
+          message: `${totalIssues} issues found, total ${totalIssueOccurence} issue occurences`,
+          url: `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_ACTION_REPOSITORY}/actions`
+        },
+        relationships: {
+          outcomes: {
+            data: results
+          }
+        }
+      }
+    }
+
+    // Respond back to Terraform Cloud
     const runTaskOutput = sendCallback(
       task_result_callback_url,
       access_token,
-      JSON.parse(rawdata)
+      runTaskJSONContent
     )
     core.setOutput('runtask-output', runTaskOutput)
   })

@@ -52,9 +52,9 @@ jobs:
       - name: Test Local Action
         id: test-action
         uses: ./
-        with:
-          runtask-url: https://upright-goldfish-fine.ngrok-free.app
-          runtask-hmac: ${{ secrets.TFC_RUNTASK_HMAC }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          HMAC_KEY: ${{ secrets.TFC_RUNTASK_HMAC }}
 
       - name: Print Output
         id: output
