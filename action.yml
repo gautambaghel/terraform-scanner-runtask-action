@@ -6,11 +6,11 @@ author: 'Your name or organization here'
 inputs:
   options:
     description: 'The URL for the configured run task'
-    required: true
+    required: false
 
   runtask-hmac:
     description: 'The HMAC for the configured run task'
-    required: true
+    required: false
 
 # Define your outputs here.
 outputs:

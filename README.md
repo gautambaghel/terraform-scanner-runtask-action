@@ -46,7 +46,7 @@ need to perform some initial setup steps before you can develop your action.
 
 ### Run this Action locally
 
-```
+```sh
 node src/index.js
 ```
 
