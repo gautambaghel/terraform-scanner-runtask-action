@@ -1,6 +1,9 @@
 name: 'The name of your action here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
+branding:
+  icon: 'shield'
+  color: 'purple'
 
 # Define your inputs here.
 inputs:
@@ -20,8 +23,8 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - uses: actions/setup-node@v3
-    with:
-      node-version: 20
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 20
     - run: node dist/index.js &
       shell: bash
