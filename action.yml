@@ -18,5 +18,10 @@ outputs:
     description: 'Output JSON filename that will have the results from Terraform Cloud'
 
 runs:
-  using: node20
-  main: dist/index.js &
+  using: "composite"
+  steps:
+  - uses: actions/setup-node@v3
+    with:
+      node-version: 20
+    - run: node dist/index.js &
+      shell: bash
