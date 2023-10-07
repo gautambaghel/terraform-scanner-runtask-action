@@ -1,7 +1,7 @@
 # sarif-results-to-runtask
 
-[![GitHub Super-Linter](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/ci.yml/badge.svg)
+[![Lint Code Base](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/linter.yml/badge.svg)](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/linter.yml)
+[![Continuous Integration](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/ci.yml/badge.svg)](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/ci.yml)
 
 This code converts SARIF results to structured Terraform Cloud run task outputs
 
