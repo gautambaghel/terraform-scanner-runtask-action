@@ -1,6 +1,8 @@
 const core = require('@actions/core')
 const fs = require('fs')
 
+let overallStatusLevel = 0
+
 // Returns the issue label, level and numeric value respectively
 // based on the acceptable input in Terraform Cloud
 const getImpactArray = impact => {
@@ -42,60 +44,68 @@ const getDescription = (shortDescription, fullDescription, help) => {
 }
 
 const getBodyFromResults = (id, resultInstances) => {
-  let body = ''
+  let builder = ''
   const resultsArray = resultInstances.filter(result => result.ruleId === id)
 
   for (let i = 0; i < resultsArray.length; i++) {
-    const locations = resultsArray[i].locations
-    for (let j = 0; j < locations.length; j++) {
-      let builder = `### Issue in ${resultsArray[i].locations[j].physicalLocation.artifactLocation.uri} file `
-      builder = builder.concat(
-        `starting from **${resultsArray[i].locations[j].physicalLocation.region.startLine}** `
-      )
-      builder = builder.concat(
-        `ending at **'${resultsArray[i].locations[j].physicalLocation.region.endLine}** `
-      )
-      builder = builder.concat(
-        '\n\n```\n',
-        resultsArray[i].locations[j].physicalLocation.region.snippet.text,
-        '\n```\n'
-      )
+    if (resultsArray[i]?.locations) {
+      const locations = resultsArray[i].locations
+      for (let j = 0; j < locations.length; j++) {
+        if (
+          resultsArray[i]?.locations[j]?.physicalLocation?.artifactLocation?.uri
+        ) {
+          builder = builder.concat(
+            `### Issue in ${resultsArray[i].locations[j].physicalLocation.artifactLocation.uri} file `
+          )
+        }
+        if (
+          resultsArray[i]?.locations[j]?.physicalLocation?.region?.startLine
+        ) {
+          builder = builder.concat(
+            `starting from **${resultsArray[i].locations[j].physicalLocation.region.startLine}** `
+          )
+        }
+        if (resultsArray[i]?.locations[j]?.physicalLocation?.region?.endLine) {
+          builder = builder.concat(
+            `ending at **'${resultsArray[i].locations[j].physicalLocation.region.endLine}** `
+          )
+        }
+        if (
+          resultsArray[i]?.locations[j]?.physicalLocation?.region?.snippet?.text
+        ) {
+          builder = builder.concat(
+            '\n\n```\n',
+            resultsArray[i].locations[j].physicalLocation.region.snippet.text,
+            '\n```\n'
+          )
+        }
 
-      body = body.concat(builder, '\n\n')
+        builder = builder.concat(builder, '\n\n')
+      }
     }
   }
 
-  return body
+  return builder
 }
 
-const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
-  let results = {}
-
-  const rawdata = fs.readFileSync(inputFileName)
-  results = JSON.parse(rawdata)
-  console.log(
-    'Pipeline Scan results file found and parsed - validated JSON file'
-  )
-
-  const rules = results.runs[0].tool.driver.rules
-  console.log(`Issues count: ${rules.length}`)
-  core.debug(`Issues count: ${rules.length}`)
-
-  const resultInstances = results.runs[0].results
-  console.log(`Total issue instance count: ${resultInstances.length}`)
-
-  let overallStatusLevel = 0
-
+const convertSarifRuleToRunTaskBlock = (
+  inputFileName,
+  rules,
+  resultInstances
+) => {
   // convert to structure run tasks json
   const sRunTaskResults = rules.map(rule => {
     // get the severity according to SARIF
-    const impactInfoArray = getImpactArray(rule.defaultConfiguration.level)
-    const severityLabel = impactInfoArray[0]
-    const severityLevel = impactInfoArray[1]
-    const severityNum = impactInfoArray[2]
+    const impactArray = getImpactArray(rule.defaultConfiguration.level)
+    const severityLabel = impactArray[0]
+    const severityLevel = impactArray[1]
+    const severityNum = impactArray[2]
     // set the overall status to the highest level of issue
     if (severityNum > overallStatusLevel) {
       core.debug(
+        `Current impact status: ${getStatusFromLevel(overallStatusLevel)}`
+      )
+      console.log(
         `Current impact status: ${getStatusFromLevel(overallStatusLevel)}`
       )
       overallStatusLevel = severityNum
@@ -106,7 +116,14 @@ const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
       rule.fullDescription,
       rule.help
     )
-    const body = getBodyFromResults(rule.id, resultInstances, description)
+
+    let body
+    if (inputFileName.includes('snyk.sarif') && rule?.help?.markdown) {
+      body = rule.help.markdown
+    } else {
+      body = getBodyFromResults(rule.id, resultInstances)
+    }
+
     // populate issue
     const resultItem = {
       type: 'task-result-outcomes',
@@ -128,53 +145,35 @@ const convertSarifFileToRunTaskFile = (inputFileName, outputFileName) => {
     return resultItem
   })
 
-  const status = getStatusFromLevel(overallStatusLevel)
-  // construct the full SARIF content
-  const runTaskJSONContent = {
-    data: {
-      type: 'task-results',
-      attributes: {
-        status,
-        message: `${rules.length} issues found`,
-        url: results.runs[0].tool.driver.informationUri
-      },
-      relationships: {
-        outcomes: {
-          data: sRunTaskResults
-        }
-      }
-    }
-  }
-
-  // save to file
-  fs.writeFileSync(outputFileName, JSON.stringify(runTaskJSONContent, null, 2))
-  console.log(`Run Task output file created: ${outputFileName}`)
+  return sRunTaskResults
 }
 
 /**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
+ * The main function
  */
-async function run() {
-  try {
-    const sarifInputFileName = core.getInput('sarif-filename', {
-      required: true
-    })
-    let sRunTaskOutputFileName = core.getInput('runtask-filename', {
-      required: false
-    })
-    if (!sRunTaskOutputFileName) {
-      sRunTaskOutputFileName = 'examples/output.json'
-      core.debug('Output file used: examples/output.json')
-    } else {
-      core.debug(`Output file used: ${sRunTaskOutputFileName}`)
-    }
+function run(sarifInputFileName) {
+  let results = {}
 
-    convertSarifFileToRunTaskFile(sarifInputFileName, sRunTaskOutputFileName)
-    core.setOutput('runtask-filename', sRunTaskOutputFileName)
-  } catch (error) {
-    core.setFailed(error.message)
-  }
+  const rawdata = fs.readFileSync(sarifInputFileName)
+  results = JSON.parse(rawdata)
+  console.log(
+    'Pipeline Scan results file found and parsed - validated JSON file'
+  )
+
+  const rules = results.runs[0].tool.driver.rules
+  console.log(`Unique issues count: ${rules.length}`)
+  core.debug(`Unique issues count: ${rules.length}`)
+
+  const resultInstances = results.runs[0].results
+  console.log(`Total issues present: ${resultInstances.length}`)
+
+  const runTaskBlock = convertSarifRuleToRunTaskBlock(
+    sarifInputFileName,
+    rules,
+    resultInstances
+  )
+  // construct the full SARIF content
+  const status = getStatusFromLevel(overallStatusLevel)
 }
 
 module.exports = {

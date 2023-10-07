@@ -4,16 +4,7 @@ author: 'Your name or organization here'
 
 # Define your inputs here.
 inputs:
-  sarif-filename:
-    description: 'Input SARIF filename that needs conversion to Terraform Cloud run task format'
-    required: true
-
-  runtask-filename:
-    description: 'Output JSON filename that will have the results in Terraform Cloud run task format'
-    required: false
-    default: 'output.json'
-
-  runtask-url:
+  options:
     description: 'The URL for the configured run task'
     required: true
 
@@ -23,8 +14,8 @@ inputs:
 
 # Define your outputs here.
 outputs:
-  runtask-filename:
-    description: 'Your output description here'
+  runtask-output:
+    description: 'Output JSON filename that will have the results from Terraform Cloud'
 
 runs:
   using: node20

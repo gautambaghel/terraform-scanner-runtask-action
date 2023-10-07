@@ -53,10 +53,9 @@ jobs:
         id: test-action
         uses: ./
         with:
-          sarif-filename: 'examples/input.sarif'
           runtask-url: https://upright-goldfish-fine.ngrok-free.app
           runtask-hmac: ${{ secrets.TFC_RUNTASK_HMAC }}
 
       - name: Print Output
         id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+        run: cat "${{ steps.test-action.outputs.runtask-output }}"

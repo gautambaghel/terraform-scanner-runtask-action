@@ -47,7 +47,7 @@ need to perform some initial setup steps before you can develop your action.
 ### Run this Action locally
 
 ```
-env INPUT_SARIF-FILENAME="examples/input.sarif" node src/index.js
+node src/index.js
 ```
 
 ## Usage

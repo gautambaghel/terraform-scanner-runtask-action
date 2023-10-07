@@ -1,0 +1,321 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "originalUriBaseIds": {
+        "PROJECTROOT": {
+          "uri": "file:///tf/",
+          "description": {
+            "text": "The root directory for all project files."
+          }
+        }
+      },
+      "tool": {
+        "driver": {
+          "name": "Snyk IaC",
+          "fullName": "Snyk Infrastructure as Code",
+          "version": "1.1232.0",
+          "informationUri": "https://docs.snyk.io/products/snyk-infrastructure-as-code",
+          "rules": [
+            {
+              "id": "SNYK-CC-TF-51",
+              "name": "ResourceHasPublicIpAssigned",
+              "shortDescription": {
+                "text": "Low severity - Resource has public IP assigned"
+              },
+              "fullDescription": {
+                "text": "Low severity - EC2"
+              },
+              "help": {
+                "text": "The issue is... \nAWS resource could be accessed externally via public IP\n\n The impact of this is... \n Increases attack vector reachability\n\n You can resolve this by... \nSet `associate_public_ip_address` attribute to `false`",
+                "markdown": "**The issue is...** \nAWS resource could be accessed externally via public IP\n\n **The impact of this is...** \n Increases attack vector reachability\n\n **You can resolve this by...** \nSet `associate_public_ip_address` attribute to `false`"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "EC2"
+                ],
+                "problem": {
+                  "severity": "low"
+                }
+              },
+              "helpUri": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-51"
+            },
+            {
+              "id": "SNYK-CC-TF-73",
+              "name": "AwsSecurityGroupAllowsOpenEgress",
+              "shortDescription": {
+                "text": "Low severity - AWS Security Group allows open egress"
+              },
+              "fullDescription": {
+                "text": "Low severity - VPC"
+              },
+              "help": {
+                "text": "The issue is... \nThe inline security group rule allows open egress\n\n The impact of this is... \n Open egress can be used to exfiltrate data to unauthorized destinations, and enable access to potentially malicious resources\n\n You can resolve this by... \nSet `egress.cidr_blocks` attribute to specific ranges e.g. `192.168.1.0/24`",
+                "markdown": "**The issue is...** \nThe inline security group rule allows open egress\n\n **The impact of this is...** \n Open egress can be used to exfiltrate data to unauthorized destinations, and enable access to potentially malicious resources\n\n **You can resolve this by...** \nSet `egress.cidr_blocks` attribute to specific ranges e.g. `192.168.1.0/24`"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "VPC"
+                ],
+                "problem": {
+                  "severity": "low"
+                }
+              },
+              "helpUri": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-73"
+            },
+            {
+              "id": "SNYK-CC-AWS-426",
+              "name": "Ec2ApiTerminationProtectionIsNotEnabled",
+              "shortDescription": {
+                "text": "Low severity - EC2 API termination protection is not enabled"
+              },
+              "fullDescription": {
+                "text": "Low severity - EC2"
+              },
+              "help": {
+                "text": "The issue is... \nTo prevent instance from being accidentally terminated using Amazon EC2, you can enable termination protection for the instance\n\n The impact of this is... \n Without this setting enabled the instances can be terminated by accident. This setting should only be used for instances with high availability requirements. Enabling this may prevent IaC workflows from updating the instance, for example terraform will not be able to terminate the instance to update instance type\n\n You can resolve this by... \nSet `disable_api_termination` attribute  with value `true`",
+                "markdown": "**The issue is...** \nTo prevent instance from being accidentally terminated using Amazon EC2, you can enable termination protection for the instance\n\n **The impact of this is...** \n Without this setting enabled the instances can be terminated by accident. This setting should only be used for instances with high availability requirements. Enabling this may prevent IaC workflows from updating the instance, for example terraform will not be able to terminate the instance to update instance type\n\n **You can resolve this by...** \nSet `disable_api_termination` attribute  with value `true`"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "EC2"
+                ],
+                "problem": {
+                  "severity": "low"
+                }
+              },
+              "helpUri": "https://security.snyk.io/rules/cloud/SNYK-CC-AWS-426"
+            },
+            {
+              "id": "SNYK-CC-TF-53",
+              "name": "NonEncryptedRootBlockDevice",
+              "shortDescription": {
+                "text": "Medium severity - Non-Encrypted root block device"
+              },
+              "fullDescription": {
+                "text": "Medium severity - EC2"
+              },
+              "help": {
+                "text": "The issue is... \nThe root block device for ec2 instance is not encrypted\n\n The impact of this is... \n That should someone gain unauthorized access to the data they would be able to read the contents.\n\n You can resolve this by... \nSet `root_block_device.encrypted` attribute to `true`",
+                "markdown": "**The issue is...** \nThe root block device for ec2 instance is not encrypted\n\n **The impact of this is...** \n That should someone gain unauthorized access to the data they would be able to read the contents.\n\n **You can resolve this by...** \nSet `root_block_device.encrypted` attribute to `true`"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "EC2"
+                ],
+                "problem": {
+                  "severity": "medium"
+                }
+              },
+              "helpUri": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-53"
+            },
+            {
+              "id": "SNYK-CC-TF-130",
+              "name": "Ec2InstanceAcceptsImdSv1",
+              "shortDescription": {
+                "text": "Low severity - EC2 instance accepts IMDSv1"
+              },
+              "fullDescription": {
+                "text": "Low severity - EC2"
+              },
+              "help": {
+                "text": "The issue is... \nInstance Metadata Service v2 is not enforced\n\n The impact of this is... \n Metadata service may be vulnerable to reverse proxy/open firewall misconfigurations and server side request forgery attacks\n\n You can resolve this by... \nSet `metadata_options.http_tokens` attribute to `required`",
+                "markdown": "**The issue is...** \nInstance Metadata Service v2 is not enforced\n\n **The impact of this is...** \n Metadata service may be vulnerable to reverse proxy/open firewall misconfigurations and server side request forgery attacks\n\n **You can resolve this by...** \nSet `metadata_options.http_tokens` attribute to `required`"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "EC2"
+                ],
+                "problem": {
+                  "severity": "low"
+                }
+              },
+              "helpUri": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-130"
+            },
+            {
+              "id": "SNYK-CC-TF-1",
+              "name": "SecurityGroupAllowsOpenIngress",
+              "shortDescription": {
+                "text": "Medium severity - Security Group allows open ingress"
+              },
+              "fullDescription": {
+                "text": "Medium severity - VPC"
+              },
+              "help": {
+                "text": "The issue is... \nThat inbound traffic is allowed to a resource from any source instead of a restricted range\n\n The impact of this is... \n That potentially everyone can access your resource\n\n You can resolve this by... \nSet `cidr_block` attribute with a more restrictive IP, for example `192.16.0.0/24`",
+                "markdown": "**The issue is...** \nThat inbound traffic is allowed to a resource from any source instead of a restricted range\n\n **The impact of this is...** \n That potentially everyone can access your resource\n\n **You can resolve this by...** \nSet `cidr_block` attribute with a more restrictive IP, for example `192.16.0.0/24`"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "VPC"
+                ],
+                "problem": {
+                  "severity": "medium"
+                }
+              },
+              "helpUri": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-1"
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "snyk-iac"
+      },
+      "results": [
+        {
+          "ruleId": "SNYK-CC-TF-51",
+          "message": {
+            "text": "This line contains a potential low severity misconfiguration affecting the EC2"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-CC-TF-73",
+          "message": {
+            "text": "This line contains a potential low severity misconfiguration affecting the VPC"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-CC-AWS-426",
+          "message": {
+            "text": "This line contains a potential low severity misconfiguration affecting the EC2"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-CC-TF-53",
+          "message": {
+            "text": "This line contains a potential medium severity misconfiguration affecting the EC2"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-CC-TF-130",
+          "message": {
+            "text": "This line contains a potential low severity misconfiguration affecting the EC2"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-CC-TF-73",
+          "message": {
+            "text": "This line contains a potential low severity misconfiguration affecting the VPC"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-CC-TF-1",
+          "message": {
+            "text": "This line contains a potential medium severity misconfiguration affecting the VPC"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-CC-TF-1",
+          "message": {
+            "text": "This line contains a potential medium severity misconfiguration affecting the VPC"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "terraformPlan.json",
+                  "uriBaseId": "PROJECTROOT"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

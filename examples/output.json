@@ -3,8 +3,8 @@
     "type": "task-results",
     "attributes": {
       "status": "failed",
-      "message": "7 issues found",
-      "url": "https://checkov.io"
+      "message": "6 issues found",
+      "url": "https://docs.snyk.io/products/snyk-infrastructure-as-code"
     },
     "relationships": {
       "outcomes": {
@@ -12,25 +12,8 @@
           {
             "type": "task-result-outcomes",
             "attributes": {
-              "outcome-id": "CKV_AWS_24",
-              "description": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
-              "tags": {
-                "Severity": [
-                  {
-                    "label": "Low",
-                    "level": "info"
-                  }
-                ]
-              },
-              "body": "### Issue in main.tf file starting from **25** ending at **'51** \n\n```\nresource \"aws_security_group\" \"allow_ssh_from_anywhere\" {\n  name        = \"allow_ssh_from_anywhere\"\n  description = \"Allow SSH inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"SSH from anywhere\"\n    from_port        = 22\n    to_port          = 22\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows SSH access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_ssh_from_anywhere\"\n  }\n}\n\n```\n\n\n",
-              "url": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/networking-1-port-security.html"
-            }
-          },
-          {
-            "type": "task-result-outcomes",
-            "attributes": {
-              "outcome-id": "CKV_AWS_23",
-              "description": "Ensure every security groups rule has a description\nResource: aws_security_group.allow_ssh_from_anywhere",
+              "outcome-id": "SNYK-CC-TF-51",
+              "description": "Low severity - Resource has public IP assigned",
               "tags": {
                 "Severity": [
                   {
@@ -39,93 +22,93 @@
                   }
                 ]
               },
-              "body": "### Issue in main.tf file starting from **25** ending at **'51** \n\n```\nresource \"aws_security_group\" \"allow_ssh_from_anywhere\" {\n  name        = \"allow_ssh_from_anywhere\"\n  description = \"Allow SSH inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"SSH from anywhere\"\n    from_port        = 22\n    to_port          = 22\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows SSH access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_ssh_from_anywhere\"\n  }\n}\n\n```\n\n\n### Issue in main.tf file starting from **53** ending at **'79** \n\n```\nresource \"aws_security_group\" \"allow_port_80_from_anywhere\" {\n  name        = \"allow_port_80_from_anywhere\"\n  description = \"Allow port 80 inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"HTTP from anywhere\"\n    from_port        = 80\n    to_port          = 80\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows HTTP access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_port_80_from_anywhere\"\n  }\n}\n\n```\n\n\n",
-              "url": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/networking-31.html"
+              "body": "**The issue is...** \nAWS resource could be accessed externally via public IP\n\n **The impact of this is...** \n Increases attack vector reachability\n\n **You can resolve this by...** \nSet `associate_public_ip_address` attribute to `false`",
+              "url": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-51"
             }
           },
           {
             "type": "task-result-outcomes",
             "attributes": {
-              "outcome-id": "CKV_AWS_260",
-              "description": "No description for this issue",
+              "outcome-id": "SNYK-CC-TF-73",
+              "description": "Low severity - AWS Security Group allows open egress",
               "tags": {
                 "Severity": [
                   {
-                    "label": "Info",
-                    "level": "none"
+                    "label": "Medium",
+                    "level": "warning"
                   }
                 ]
               },
-              "body": "### Issue in main.tf file starting from **53** ending at **'79** \n\n```\nresource \"aws_security_group\" \"allow_port_80_from_anywhere\" {\n  name        = \"allow_port_80_from_anywhere\"\n  description = \"Allow port 80 inbound traffic from anywhere\"\n\n  ingress {\n    description      = \"HTTP from anywhere\"\n    from_port        = 80\n    to_port          = 80\n    protocol         = \"tcp\"\n    # WORKSHOP: Modify the following line to a CIDR block specific to you, and uncomment the next line with 0.0.0.0\n    # This line allows HTTP access from any IP address\n#    cidr_blocks      = [\"0.0.0.0/0\"]\n    cidr_blocks      = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port        = 0\n    to_port          = 0\n    protocol         = \"-1\"\n    cidr_blocks      = [\"0.0.0.0/0\"]\n    ipv6_cidr_blocks = [\"::/0\"]\n  }\n\n  tags = {\n    Name = \"allow_port_80_from_anywhere\"\n  }\n}\n\n```\n\n\n",
-              "url": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-groups-do-not-allow-ingress-from-00000-to-port-80.html"
+              "body": "**The issue is...** \nThe inline security group rule allows open egress\n\n **The impact of this is...** \n Open egress can be used to exfiltrate data to unauthorized destinations, and enable access to potentially malicious resources\n\n **You can resolve this by...** \nSet `egress.cidr_blocks` attribute to specific ranges e.g. `192.168.1.0/24`",
+              "url": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-73"
             }
           },
           {
             "type": "task-result-outcomes",
             "attributes": {
-              "outcome-id": "CKV_AWS_79",
-              "description": "Ensure Instance Metadata Service Version 1 is not enabled",
+              "outcome-id": "SNYK-CC-AWS-426",
+              "description": "Low severity - EC2 API termination protection is not enabled",
               "tags": {
                 "Severity": [
                   {
-                    "label": "High",
-                    "level": "error"
+                    "label": "Medium",
+                    "level": "warning"
                   }
                 ]
               },
-              "body": "### Issue in main.tf file starting from **92** ending at **'116** \n\n```\nresource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}\n```\n\n\n",
-              "url": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-general-policies/bc-aws-general-31.html"
+              "body": "**The issue is...** \nTo prevent instance from being accidentally terminated using Amazon EC2, you can enable termination protection for the instance\n\n **The impact of this is...** \n Without this setting enabled the instances can be terminated by accident. This setting should only be used for instances with high availability requirements. Enabling this may prevent IaC workflows from updating the instance, for example terraform will not be able to terminate the instance to update instance type\n\n **You can resolve this by...** \nSet `disable_api_termination` attribute  with value `true`",
+              "url": "https://security.snyk.io/rules/cloud/SNYK-CC-AWS-426"
             }
           },
           {
             "type": "task-result-outcomes",
             "attributes": {
-              "outcome-id": "CKV_AWS_88",
-              "description": "EC2 instance should not have public IP.",
+              "outcome-id": "SNYK-CC-TF-53",
+              "description": "Medium severity - Non-Encrypted root block device",
               "tags": {
                 "Severity": [
                   {
-                    "label": "Info",
-                    "level": "none"
+                    "label": "Medium",
+                    "level": "warning"
                   }
                 ]
               },
-              "body": "### Issue in main.tf file starting from **92** ending at **'116** \n\n```\nresource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}\n```\n\n\n",
-              "url": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/public-policies/public-12.html"
+              "body": "**The issue is...** \nThe root block device for ec2 instance is not encrypted\n\n **The impact of this is...** \n That should someone gain unauthorized access to the data they would be able to read the contents.\n\n **You can resolve this by...** \nSet `root_block_device.encrypted` attribute to `true`",
+              "url": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-53"
             }
           },
           {
             "type": "task-result-outcomes",
             "attributes": {
-              "outcome-id": "CKV_AWS_126",
-              "description": "Ensure that detailed monitoring is enabled for EC2 instances",
+              "outcome-id": "SNYK-CC-TF-130",
+              "description": "Low severity - EC2 instance accepts IMDSv1",
               "tags": {
                 "Severity": [
                   {
-                    "label": "High",
-                    "level": "error"
+                    "label": "Medium",
+                    "level": "warning"
                   }
                 ]
               },
-              "body": "### Issue in main.tf file starting from **92** ending at **'116** \n\n```\nresource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}\n```\n\n\n",
-              "url": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-logging-policies/ensure-that-detailed-monitoring-is-enabled-for-ec2-instances.html"
+              "body": "**The issue is...** \nInstance Metadata Service v2 is not enforced\n\n **The impact of this is...** \n Metadata service may be vulnerable to reverse proxy/open firewall misconfigurations and server side request forgery attacks\n\n **You can resolve this by...** \nSet `metadata_options.http_tokens` attribute to `required`",
+              "url": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-130"
             }
           },
           {
             "type": "task-result-outcomes",
             "attributes": {
-              "outcome-id": "CKV_AWS_135",
-              "description": "Ensure that EC2 is EBS optimized",
+              "outcome-id": "SNYK-CC-TF-1",
+              "description": "Medium severity - Security Group allows open ingress",
               "tags": {
                 "Severity": [
                   {
-                    "label": "High",
-                    "level": "error"
+                    "label": "Medium",
+                    "level": "warning"
                   }
                 ]
               },
-              "body": "### Issue in main.tf file starting from **92** ending at **'116** \n\n```\nresource \"aws_instance\" \"ec2\" {\n  ami           = data.aws_ami.amazon2.id\n  instance_type = \"t3.nano\"\n  associate_public_ip_address = true\n  vpc_security_group_ids = [ aws_security_group.allow_ssh_from_anywhere.id, aws_security_group.allow_port_80_from_anywhere.id]\n\n  user_data = <<-EOF\n    #!/bin/bash\n    # install httpd (Linux 2 version)\n    yum update -y\n    yum install -y httpd\n    systemctl start httpd\n    systemctl enable httpd\n    echo \"<h1>Hello World from the AWS HashiCorp + Snyk Workshop on $(hostname -f)</h1>\" > /var/www/html/index.html\n  EOF\n\n  # WORKSHOP: Add the name of your key here\n  key_name = \"mam-workshop-keypair\"\n\n  # WORKSHOP: uncomment the lines below to enable encrypted block device\n  root_block_device {\n    encrypted = true\n  }\n\n}\n```\n\n\n",
-              "url": "https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/aws-policies/aws-general-policies/ensure-that-ec2-is-ebs-optimized.html"
+              "body": "**The issue is...** \nThat inbound traffic is allowed to a resource from any source instead of a restricted range\n\n **The impact of this is...** \n That potentially everyone can access your resource\n\n **You can resolve this by...** \nSet `cidr_block` attribute with a more restrictive IP, for example `192.16.0.0/24`",
+              "url": "https://security.snyk.io/rules/cloud/SNYK-CC-TF-1"
             }
           }
         ]
