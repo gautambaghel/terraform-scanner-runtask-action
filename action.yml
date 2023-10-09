@@ -7,9 +7,23 @@ branding:
 
 # Define your inputs here.
 inputs:
-  options:
-    description: 'The URL for the configured run task'
+  ngrok_domain:
+    description: 'Ngrok domain'
+    required: true
+
+  ngrok_authtoken:
+    description: 'Ngrok authorization token'
+    required: true
+
+  port:
+    description: 'The port to forward traffic'
     required: false
+    default: 3000
+
+  timeout:  
+    description: 'Ngrok tunnel deployment timeout'
+    required: false
+    default: '1h'
 
   runtask-hmac:
     description: 'The HMAC for the configured run task'
@@ -19,12 +33,21 @@ inputs:
 outputs:
   runtask-output:
     description: 'Output JSON filename that will have the results from Terraform Cloud'
+    value: ${{ steps.sarif-results-to-runtask.outputs.runtask-output }}
 
 runs:
   using: "composite"
   steps:
+    # Setup Ngrok.
+    - run: |
+        wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+        unzip -qq ngrok-stable-linux-amd64.zip
+        ./ngrok config add-authtoken ${{ inputs.ngrok_authtoken }}
+        ( timeout ${{ inputs.timeout }} ./ngrok http --domain=${{ inputs.domain }} ${{ inputs.port }} ) &
+      shell: bash
     - uses: actions/setup-node@v3
       with:
         node-version: 20
-    - run: node dist/index.js &
+    - id: sarif-results-to-runtask
+      run: node dist/index.js &
       shell: bash

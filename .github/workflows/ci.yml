@@ -52,9 +52,19 @@ jobs:
       - name: Test Local Action
         id: test-action
         uses: ./
+        with:
+          ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
+          ngrok_token: ${{ secrets.NGROK_TOKEN }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           HMAC_KEY: ${{ secrets.TFC_RUNTASK_HMAC }}
+
+      - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
+        id: run
+        continue-on-error: true
+        with:
+          workspace: ${{ secrets.TFC_WORKSPACE }}
+          plan_only: true
 
       - name: Print Output
         id: output
