@@ -15,8 +15,8 @@ inputs:
     description: 'Ngrok authorization token'
     required: true
 
-  port:
-    description: 'The port to forward traffic'
+  ngrok_port:
+    description: 'The port to forward traffic for Ngrok'
     required: false
     default: 3000
 
@@ -34,7 +34,7 @@ runs:
   using: "composite"
   steps:
     # Setup Ngrok.
-    - run: docker run --net=host --detach -e NGROK_AUTHTOKEN=${{ inputs.ngrok_authtoken }} ngrok/ngrok:latest http --domain=${{ inputs.domain }} ${{ inputs.port }}
+    - run: docker run --net=host --detach -e NGROK_AUTHTOKEN=${{ inputs.ngrok_authtoken }} ngrok/ngrok:latest http --domain=${{ inputs.ngrok_domain }} ${{ inputs.ngrok_port }}
       shell: bash
     - uses: actions/setup-node@v3
       with:
