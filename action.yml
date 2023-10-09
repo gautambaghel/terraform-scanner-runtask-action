@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'sarif-results-to-runtask'
+description: 'This code converts SARIF results to structured Terraform Cloud run task outputs'
+author: 'gautambaghel'
 branding:
   icon: 'shield'
   color: 'purple'

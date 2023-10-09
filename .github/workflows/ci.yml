@@ -54,7 +54,7 @@ jobs:
         uses: ./
         with:
           ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
-          ngrok_token: ${{ secrets.NGROK_TOKEN }}
+          ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           HMAC_KEY: ${{ secrets.TFC_RUNTASK_HMAC }}
@@ -63,9 +63,7 @@ jobs:
         id: run
         continue-on-error: true
         with:
-          workspace: ${{ secrets.TFC_WORKSPACE }}
           plan_only: true
-
-      - name: Print Output
-        id: output
-        run: cat "${{ steps.test-action.outputs.runtask-output }}"
+          organization: 'tfc-integration-sandbox'
+          workspace: ${{ secrets.TFC_WORKSPACE }}
+          token: ${{ secrets.TFC_API_TOKEN }}
