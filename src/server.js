@@ -89,16 +89,22 @@ async function executeCmds(cmd, task_result_callback_url, access_token) {
 
     // Call the conversion logic (sarif -> runtask)
     const checkovResults = convert('results.sarif')
-    const snykResults = convert('snyk.sarif')
+    let results = checkovResults[0]
+    let status = checkovResults[1]
+    let totalIssues = checkovResults[2]
+    let totalIssueOccurence = checkovResults[3]
 
-    // Retrieve the scan results
-    const results = checkovResults[0].concat(snykResults[0])
-    const status =
-      checkovResults[1] === 'failed' || snykResults[1] === 'failed'
-        ? 'failed'
-        : 'passed'
-    const totalIssues = checkovResults[2] + snykResults[2]
-    const totalIssueOccurence = checkovResults[3] + snykResults[3]
+    // Append Snyk results if token present
+    if (process.env.SNYK_TOKEN) {
+      const snykResults = convert('snyk.sarif')
+
+      // Retrieve the scan results
+      results = results.concat(snykResults[0])
+      status =
+        status === 'failed' || snykResults[1] === 'failed' ? 'failed' : 'passed'
+      totalIssues = totalIssues + snykResults[2]
+      totalIssueOccurence = totalIssueOccurence + snykResults[3]
+    }
 
     // Create the JSON to respond to Terraform Cloud
     const runTaskJSONContent = {
@@ -134,6 +140,7 @@ async function scan(task_result_callback_url, access_token) {
   cmdBuilder = cmdBuilder.concat(
     `/tf bridgecrew/checkov -f ${plan} ${options} -o sarif; `
   )
+  // Scan using Snyk if token present
   if (process.env.SNYK_TOKEN) {
     cmdBuilder = cmdBuilder.concat(
       `docker run --tty --volume ${process.cwd()}:/tf --workdir /tf `

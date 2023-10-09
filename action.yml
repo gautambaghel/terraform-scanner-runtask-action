@@ -20,9 +20,10 @@ inputs:
     required: false
     default: 3000
 
-  runtask-hmac:
-    description: 'The HMAC for the configured run task'
+  tfc_runtask_hmac_key:
+    description: 'The HMAC for the configured Terraform Cloud run task'
     required: false
+    default: 'abc123'
 
 # Define your outputs here.
 outputs:
@@ -40,5 +41,5 @@ runs:
       with:
         node-version: 20
     - id: sarif-results-to-runtask
-      run: node dist/index.js &
+      run: env PORT=${{ inputs.ngrok_port }} env HMAC_KEY=${{ inputs.tfc_runtask_hmac_key }} node dist/index.js &
       shell: bash

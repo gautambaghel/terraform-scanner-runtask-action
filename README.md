@@ -5,50 +5,40 @@
 
 This code converts SARIF results to structured Terraform Cloud run task outputs
 
-## Initial Setup
+## Getting started
 
-After you've cloned the repository to your local machine or codespace, you'll
-need to perform some initial setup steps before you can develop your action.
+This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform Cloud run tasks.
+
+### Prerequisites
+
+* A ngrok domain is required for the setup to work, this can be obtained by signing up for a [free account](https://dashboard.ngrok.com/signup)
+  * ![ngrok_setup](images/ngrok.png)
+
+* A workspace with the run task attached must exist in Terraform Cloud
+  * ![terraform_cloud_setup](images/terraform.png)
+
+---
 
 > [!NOTE]
 >
-> You'll need to have a reasonably modern version of
-> [Node.js](https://nodejs.org) handy. If you are using a version manager like
-> [`nodenv`](https://github.com/nodenv/nodenv) or
-> [`nvm`](https://github.com/nvm-sh/nvm), you can run `nodenv install` in the
-> root of your repository to install the version specified in
-> [`package.json`](./package.json). Otherwise, 20.x or later should work!
-
-1. :hammer_and_wrench: Install the dependencies
-
-   ```bash
-   npm install
-   ```
-
-1. :building_construction: Package the JavaScript for distribution
-
-   ```bash
-   npm run bundle
-   ```
-
-1. :white_check_mark: Run the tests
-
-   ```bash
-   $ npm test
-
-   PASS  ./index.test.js
-     ✓ throws invalid number (3ms)
-     ✓ wait 500 ms (504ms)
-     ✓ test runs (95ms)
-
-   ...
-   ```
+> You'll need to run ngrok and the server locally for the first time (**only once**) to verify run task
 
 ### Run this Action locally
+
+This setup defaults the HMAC key to `abc123` & port to `3000` for using a different HMAC key set the `HMAC_KEY` and `PORT` env var respectively.
 
 ```sh
 node src/index.js
 ```
+
+---
+
+```sh
+ngrok config add-authtoken <your_token>
+ngrok http --domain='<your_domain>' 3000
+```
+
+Create the run task with ngrok domain > save
 
 ## Usage
 
@@ -64,11 +54,42 @@ steps:
 
   - name: Run my Action
     id: sarif-runtask-action
-    uses: gautambaghel/sarif-results-to-runtask@v1 # Commit with the `v1` tag
+    uses: gautambaghel/sarif-results-to-runtask@v1
     with:
-      sarif-filename: 'examples/input.sarif'
+      ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
+      ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
+      tfc_runtask_hmac_key: ${{ secrets.TFC_RUNTASK_HMAC }}
 
   - name: Streamlines run task output format
     id: output
-    run: cat "${{ steps.sarif-runtask-action.outputs.runtask-filename }}"
+    run: echo "${{ steps.sarif-runtask-action.outputs.runtask-output }}"
 ```
+
+### Building Setup locally
+
+After you've cloned the repository to your local machine or codespace, you'll
+need to perform some initial setup steps before you can develop your action.
+
+1. :hammer_and_wrench: Install the dependencies
+
+   ```bash
+   npm install
+   ```
+
+2. :building_construction: Package the JavaScript for distribution
+
+   ```bash
+   npm run bundle
+   ```
+
+3. :white_check_mark: Run the tests
+
+   ```bash
+   $ npm test
+
+   PASS  ./index.test.js
+    index
+      ✓ calls run when imported (2 ms)
+
+   ...
+   ```
