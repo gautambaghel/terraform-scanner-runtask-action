@@ -20,11 +20,6 @@ inputs:
     required: false
     default: 3000
 
-  timeout:  
-    description: 'Ngrok tunnel deployment timeout'
-    required: false
-    default: '1h'
-
   runtask-hmac:
     description: 'The HMAC for the configured run task'
     required: false
@@ -39,12 +34,7 @@ runs:
   using: "composite"
   steps:
     # Setup Ngrok.
-    - run: |
-        wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-        unzip -qq ngrok-stable-linux-amd64.zip
-        ./ngrok config add-authtoken ${{ inputs.ngrok_authtoken }}
-        ( timeout ${{ inputs.timeout }} ./ngrok http --domain=${{ inputs.domain }} ${{ inputs.port }} ) &
-      shell: bash
+    - run: docker run --net=host --detach -e NGROK_AUTHTOKEN=${{ inputs.ngrok_authtoken }} ngrok/ngrok:latest http --domain=${{ inputs.domain }} ${{ inputs.port }}
     - uses: actions/setup-node@v3
       with:
         node-version: 20
