@@ -65,5 +65,5 @@ jobs:
         with:
           plan_only: true
           organization: 'tfc-integration-sandbox'
-          workspace: ${{ secrets.TFC_WORKSPACE }}
+          workspace: 'vulnerable-ec2'
           token: ${{ secrets.TFC_API_TOKEN }}
