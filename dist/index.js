@@ -33301,12 +33301,7 @@ async function executeCmds(cmd, task_result_callback_url, access_token) {
     }
 
     // Respond back to Terraform Cloud
-    const runTaskOutput = sendCallback(
-      task_result_callback_url,
-      access_token,
-      runTaskJSONContent
-    )
-    core.setOutput('runtask-output', runTaskOutput)
+    sendCallback(task_result_callback_url, access_token, runTaskJSONContent)
   })
 }
 
@@ -33358,7 +33353,9 @@ async function sendCallback(callbackUrl, accessToken, payload) {
   }
 
   const res = await fetch(callbackUrl, options)
-  return await res.json()
+  const responseData = await res.json()
+  core.setOutput('runtask-output', responseData)
+  return responseData
 }
 
 async function getPlan(url, accessToken) {
