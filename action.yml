@@ -35,6 +35,7 @@ runs:
   steps:
     # Setup Ngrok.
     - run: docker run --net=host --detach -e NGROK_AUTHTOKEN=${{ inputs.ngrok_authtoken }} ngrok/ngrok:latest http --domain=${{ inputs.domain }} ${{ inputs.port }}
+      shell: bash
     - uses: actions/setup-node@v3
       with:
         node-version: 20
