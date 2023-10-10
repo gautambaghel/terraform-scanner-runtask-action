@@ -176,9 +176,7 @@ async function sendCallback(callbackUrl, accessToken, payload) {
   }
 
   const res = await fetch(callbackUrl, options)
-  const responseData = await res.json()
-  core.setOutput('runtask-output', responseData)
-  return responseData
+  return await res.json()
 }
 
 async function getPlan(url, accessToken) {

@@ -68,6 +68,6 @@ jobs:
           workspace: 'vulnerable-ec2'
           token: ${{ secrets.TFC_API_TOKEN }}
 
-      - name: Print run task output
+      - name: Print sarif results
         id: output
-        run: echo "${{ steps.test-action.outputs.runtask-output }}"
+        run: cat results.sarif snyk.sarif 2>/dev/null
