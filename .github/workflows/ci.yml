@@ -58,6 +58,8 @@ jobs:
           tfc_runtask_hmac_key: ${{ secrets.TFC_RUNTASK_HMAC }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          PRISMA_API_URL: ${{ secrets.PRISMA_API_URL }}
+          PRISMA_CLOUD_TOKEN: ${{ secrets.PRISMA_CLOUD_TOKEN }}
 
       - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
         id: run

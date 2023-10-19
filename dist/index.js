@@ -33308,9 +33308,20 @@ async function executeCmds(cmd, task_result_callback_url, access_token) {
 async function scan(task_result_callback_url, access_token) {
   const plan = 'terraformPlan.json'
   const options = '--compact --quiet'
-  let cmdBuilder = `docker run --tty --volume ${process.cwd()}:/tf --workdir `
+  let cmdBuilder = `docker run --tty --volume ${process.cwd()}:/tf --workdir /tf `
+  // Upload results if Prisma Cloud token present
+  if (process.env.PRISMA_CLOUD_TOKEN && process.env.PRISMA_API_URL) {
+    cmdBuilder = cmdBuilder.concat(
+      `-e BC_API_KEY=${process.env.PRISMA_CLOUD_TOKEN} -e PRISMA_API_URL=${process.env.PRISMA_API_URL} `
+    )
+    if (process.env.GITHUB_ACTION_REPOSITORY) {
+      cmdBuilder = cmdBuilder.concat(
+        `-e REPO_ID=${process.env.GITHUB_ACTION_REPOSITORY} `
+      )
+    }
+  }
   cmdBuilder = cmdBuilder.concat(
-    `/tf bridgecrew/checkov -f ${plan} ${options} -o sarif; `
+    `bridgecrew/checkov -f ${plan} ${options} -o sarif; `
   )
   // Scan using Snyk if token present
   if (process.env.SNYK_TOKEN) {

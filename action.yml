@@ -1,4 +1,4 @@
-name: 'sarif-results-to-runtask'
+name: 'sarif-to-terraform-runtask'
 description: 'This code converts SARIF results to structured Terraform Cloud run task outputs'
 author: 'gautambaghel'
 branding:
@@ -25,12 +25,6 @@ inputs:
     required: false
     default: 'abc123'
 
-# Define your outputs here.
-outputs:
-  runtask-output:
-    description: 'Output JSON filename that will have the results from Terraform Cloud'
-    value: ${{ steps.sarif-results-to-runtask.outputs.runtask-output }}
-
 runs:
   using: "composite"
   steps:
@@ -40,6 +34,6 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 20
-    - id: sarif-results-to-runtask
+    - id: sarif-to-terraform-runtask
       run: env PORT=${{ inputs.ngrok_port }} env HMAC_KEY=${{ inputs.tfc_runtask_hmac_key }} node dist/index.js &
       shell: bash

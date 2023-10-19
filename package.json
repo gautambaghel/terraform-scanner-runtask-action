@@ -1,15 +1,15 @@
 {
-    "name": "sarif-results-to-runtask",
+    "name": "sarif-to-terraform-runtask",
     "description": "Converts SARIF results to structured Terraform Cloud run task outputs",
     "version": "1.0.0",
     "author": "gautambaghel",
-    "homepage": "https://github.com/gautambaghel/sarif-results-to-runtask#readme",
+    "homepage": "https://github.com/gautambaghel/sarif-to-terraform-runtask#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/gautambaghel/sarif-results-to-runtask.git"
+        "url": "git+https://github.com/gautambaghel/sarif-to-terraform-runtask.git"
     },
     "bugs": {
-        "url": "https://github.com/gautambaghel/sarif-results-to-runtask/issues"
+        "url": "https://github.com/gautambaghel/sarif-to-terraform-runtask/issues"
     },
     "keywords": [
         "GitHub",

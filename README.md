@@ -1,7 +1,7 @@
-# sarif-results-to-runtask
+# sarif-to-terraform-runtask
 
-[![Lint Code Base](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/linter.yml/badge.svg)](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/linter.yml)
-[![Continuous Integration](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/ci.yml/badge.svg)](https://github.com/gautambaghel/sarif-results-to-runtask/actions/workflows/ci.yml)
+[![Lint Code Base](https://github.com/gautambaghel/sarif-to-terraform-runtask/actions/workflows/linter.yml/badge.svg)](https://github.com/gautambaghel/sarif-to-terraform-runtask/actions/workflows/linter.yml)
+[![Continuous Integration](https://github.com/gautambaghel/sarif-to-terraform-runtask/actions/workflows/ci.yml/badge.svg)](https://github.com/gautambaghel/sarif-to-terraform-runtask/actions/workflows/ci.yml)
 
 This code converts SARIF results to structured Terraform Cloud run task outputs
 
@@ -54,15 +54,15 @@ steps:
 
   - name: Run my Action
     id: sarif-runtask-action
-    uses: gautambaghel/sarif-results-to-runtask@v1
+    uses: gautambaghel/sarif-to-terraform-runtask@v1
     with:
       ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
       ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
       tfc_runtask_hmac_key: ${{ secrets.TFC_RUNTASK_HMAC }}
-
-  - name: Streamlines run task output format
-    id: output
-    run: echo "${{ steps.sarif-runtask-action.outputs.runtask-output }}"
+    env:
+      PRISMA_CLOUD_URL: ${{ secrets.PRISMA_CLOUD_URL }} # required if using prisma cloud
+      PRISMA_CLOUD_TOKEN: ${{ secrets.PRISMA_CLOUD_TOKEN }} # required if using prisma cloud
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}     # required if using snyk
 ```
 
 ### Building Setup locally
