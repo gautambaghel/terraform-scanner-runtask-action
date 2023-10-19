@@ -17,53 +17,54 @@ This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform 
 * A workspace with the run task attached must exist in Terraform Cloud
   * ![terraform_cloud_setup](images/terraform.png)
 
----
+## Getting started
 
-> [!NOTE]
+> [!IMPORTANT]
 >
 > You'll need to run ngrok and the server locally for the first time (**only once**) to verify run task
 
-### Run this Action locally
+* Setup this Action locally for the first run
 
-This setup defaults the HMAC key to `abc123` & port to `3000` for using a different HMAC key set the `HMAC_KEY` and `PORT` env var respectively.
+  This setup defaults the HMAC key to `abc123` & port to `3000` for using a different HMAC key set the `HMAC_KEY` and `PORT` env var respectively.
 
-```sh
-node src/index.js
-```
+  ```sh
+  node src/index.js
+  ```
 
----
+  ```sh
+  ngrok config add-authtoken <your_token>
+  ngrok http --domain='<your_domain>' 3000
+  ```
 
-```sh
-ngrok config add-authtoken <your_token>
-ngrok http --domain='<your_domain>' 3000
-```
+* Follow the Terraform Cloud run task creation process
+  * Go to Terraform Cloud organization settings
+  * Click Run Tasks
+  * Create the run task with ngrok domain
+  * Hit save
 
-Create the run task with ngrok domain > save
 
-## Usage
+* To include the action in a workflow in another repository, you can use the
+  `uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
+  hash.
 
-To include the action in a workflow in another repository, you can use the
-`uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
-hash.
+  ```yaml
+  steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v4
 
-```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
-
-  - name: Run my Action
-    id: sarif-runtask-action
-    uses: gautambaghel/sarif-to-terraform-runtask@v1
-    with:
-      ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
-      ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
-      tfc_runtask_hmac_key: ${{ secrets.TFC_RUNTASK_HMAC }}
-    env:
-      PRISMA_CLOUD_URL: ${{ secrets.PRISMA_CLOUD_URL }} # required if using prisma cloud
-      PRISMA_CLOUD_TOKEN: ${{ secrets.PRISMA_CLOUD_TOKEN }} # required if using prisma cloud
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}     # required if using snyk
-```
+    - name: Run my Action
+      id: sarif-runtask-action
+      uses: gautambaghel/sarif-to-terraform-runtask@v1.0.0-beta
+      with:
+        ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
+        ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
+        tfc_runtask_hmac_key: ${{ secrets.TFC_RUNTASK_HMAC }}
+      env:
+        PRISMA_CLOUD_URL: ${{ secrets.PRISMA_CLOUD_URL }} # only required if using prisma cloud
+        PRISMA_CLOUD_TOKEN: ${{ secrets.PRISMA_CLOUD_TOKEN }} # only required if using prisma cloud
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # only required if using snyk
+  ```
 
 ### Building Setup locally
 
@@ -93,3 +94,8 @@ need to perform some initial setup steps before you can develop your action.
 
    ...
    ```
+
+### Limitations
+
+* Run task endpoint validation needs to happen locally for the first run
+* Terraform cloud workflows can only work through GitHub Action
