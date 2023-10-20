@@ -24,7 +24,7 @@ This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform 
 > You'll need to run ngrok and the server locally for the first time (**only once**) to verify run task
 
 * A ngrok `domain` & `token` is required for the setup to work > copy the domain & auth token from Ngrok dashboard & save for later use
- 
+
 ![ngrok_setup](images/ngrok.png)
 
 * Run the node server locally for the initial run task setup
