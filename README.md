@@ -75,13 +75,15 @@ This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform 
       id: checkout
       uses: actions/checkout@v4
 
-    - name: Run my Action
-      id: sarif-runtask-action
+    # Place it before the Terraform run to intercept the run task APIs
+    - name: terraform-scanner-runtask-action
+      id: terraform-scanner-runtask-action
       uses: gautambaghel/terraform-scanner-runtask-action@v1.0.0-beta
       with:
         ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
         ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
     
+    # Run the Terraform workspace
     - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
       id: run
       continue-on-error: true
