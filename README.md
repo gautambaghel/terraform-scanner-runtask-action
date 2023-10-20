@@ -6,27 +6,26 @@
 This GitHub action runs Terraform scanners as a Terraform Cloud run task
 
 Currently supports:
-  * checkov (runs as default with optional Prisma Cloud integration)
-  * snyk (requires a Snyk token)
+
+* Checkov (runs as default with optional Prisma Cloud integration)
+* Snyk (requires a Snyk token)
 
 ## Prerequisites
 
 * A Terraform Cloud account [sign up for free here](https://app.terraform.io/public/signup/account)
 * A free ngrok account [sign up here](https://dashboard.ngrok.com/signup)
-* Ngrok [install docs](https://ngrok.com/docs/getting-started/#step-1-install)
-* Terraform workspace (API or CLI only)
+* Ngrok [installation docs](https://ngrok.com/docs/getting-started/#step-1-install)
 
 ## Setup
 
 This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform Cloud run tasks.
 
 > [!IMPORTANT]
->
 > You'll need to run ngrok and the server locally for the first time (**only once**) to verify run task
 
 * A ngrok `domain` & `token` is required for the setup to work > copy the domain & auth token from Ngrok dashboard & save for later use
  
-    ![ngrok_setup](images/ngrok.png)
+![ngrok_setup](images/ngrok.png)
 
 * Run the node server locally for the initial run task setup
 
@@ -55,9 +54,9 @@ This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform 
 
 ## Usage
 
-* Once you've completed the setup steps above and create a Terraform Cloud workspace with the run task attached, create the GitHub action `ci.yml` file and push
+* Once you've completed the setup steps above and create a Terraform Cloud workspace (API or CLI only) with the run task attached, create the GitHub action `ci.yml` file and push
 
-* See below for example invocation of this action, add this to the GitHub repo containing your Terraform code
+* See below for example invocation of this action, add this to the GitHub repository containing your Terraform code
 
   ```yaml
   name: Continuous Integration
@@ -95,10 +94,10 @@ This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform 
 
 * For a more complete example refer to [example-ci.yml](examples/example-ci.yml) file
 
-### Building Setup locally
+### Developing locally
 
 After you've cloned the repository to your local machine or codespace, you'll
-need to perform some initial setup steps before you can develop your action.
+need to perform some initial setup steps before you can develop this action.
 
 1. :hammer_and_wrench: Install the dependencies
 
@@ -128,3 +127,4 @@ need to perform some initial setup steps before you can develop your action.
 
 * Run task endpoint validation needs to happen locally for the first run
 * Terraform cloud workflows can only work through GitHub Action
+* Only API & CLI based workflows work for a Terraform Cloud workspace
