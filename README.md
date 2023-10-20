@@ -5,7 +5,7 @@
 
 This code converts SARIF results to structured Terraform Cloud run task outputs
 
-### Prerequisites
+## Prerequisites
 
 * A ngrok domain is required for the setup to work, this can be obtained by signing up for a [free account](https://dashboard.ngrok.com/signup)
   * ![ngrok_setup](images/ngrok.png)
