@@ -29,11 +29,11 @@ runs:
   using: "composite"
   steps:
     # Setup Ngrok.
-    - run: docker run --net=host --detach -e NGROK_AUTHTOKEN=${{ inputs.ngrok_authtoken }} ngrok/ngrok:latest http --domain=${{ inputs.ngrok_domain }} ${{ inputs.ngrok_port }}
+    - run: docker run --net=host --name "sarif-to-terraform-runtask" --detach -e NGROK_AUTHTOKEN=${{ inputs.ngrok_authtoken }} ngrok/ngrok:latest http --domain=${{ inputs.ngrok_domain }} ${{ inputs.ngrok_port }}
       shell: bash
     - run: |
         curl -LJ -o sarif-to-terraform-runtask.tar.gz https://github.com/gautambaghel/sarif-to-terraform-runtask/archive/main.tar.gz
         mkdir tmp/
         tar -zxf sarif-to-terraform-runtask.tar.gz --strip-components 1 -C tmp/ 
-        env PORT=${{ inputs.ngrok_port }} env HMAC_KEY=${{ inputs.tfc_runtask_hmac_key }} node tmp/dist/index.js &
+        env PORT=${{ inputs.ngrok_port }} env HMAC_KEY=${{ inputs.tfc_runtask_hmac_key }} node tmp/dist/index.js > sarif-to-terraform-runtask.log 2>&1 &   
       shell: bash
