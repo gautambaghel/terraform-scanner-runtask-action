@@ -31,5 +31,5 @@ runs:
     # Setup Ngrok.
     - run: docker run --net=host --detach -e NGROK_AUTHTOKEN=${{ inputs.ngrok_authtoken }} ngrok/ngrok:latest http --domain=${{ inputs.ngrok_domain }} ${{ inputs.ngrok_port }}
       shell: bash
-    - run: docker run --net=host --detach -e HMAC_KEY=${{ inputs.tfc_runtask_hmac_key }} -v `pwd`/dist:/dist node:20 node dist/index.js
+    - run: docker run --net=host --detach --name="sarif-to-terraform-runtask" -e HMAC_KEY=${{ inputs.tfc_runtask_hmac_key }} baghelg/sarif-to-terraform-runtask:latest
       shell: bash
