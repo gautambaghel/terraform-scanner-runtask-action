@@ -1,0 +1,39 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "releases/*"
+
+jobs:
+
+  scan-terraform:
+    name: Scan Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Scan Terraform
+        uses: gautambaghel/sarif-to-terraform-runtask@1.0.0-beta
+        with:
+          ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
+          ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
+          tfc_runtask_hmac_key: ${{ secrets.TFC_RUNTASK_HMAC }}
+        env:
+          PRISMA_CLOUD_URL: ${{ secrets.PRISMA_CLOUD_URL }} # only required if using prisma cloud
+          PRISMA_CLOUD_TOKEN: ${{ secrets.PRISMA_CLOUD_TOKEN }} # only required if using prisma cloud
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # only required if using snyk
+
+      - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
+        id: run
+        continue-on-error: true
+        with:
+          plan_only: true
+          organization: '<YOUR_TERRAFORM_CLOUD_ORG_NAME>'
+          workspace: '<YOUR_TERRAFORM_CLOUD_WORKSPACE_NAME>'
+          token: ${{ secrets.TFC_API_TOKEN }}
