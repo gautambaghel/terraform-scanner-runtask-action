@@ -5,10 +5,6 @@
 
 This code converts SARIF results to structured Terraform Cloud run task outputs
 
-## Getting started
-
-This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform Cloud run tasks.
-
 ### Prerequisites
 
 * A ngrok domain is required for the setup to work, this can be obtained by signing up for a [free account](https://dashboard.ngrok.com/signup)
@@ -18,6 +14,8 @@ This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform 
   * ![terraform_cloud_setup](images/terraform.png)
 
 ## Getting started
+
+This GitHub Action uses tunneling via NGROK to expose an endpoint for Terraform Cloud run tasks.
 
 > [!IMPORTANT]
 >
