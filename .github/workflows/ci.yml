@@ -70,9 +70,9 @@ jobs:
           workspace: 'vulnerable-ec2'
           token: ${{ secrets.TFC_API_TOKEN }}
 
+      - run: cat terraform-scanner-runtask-action.log
+        name: Scan results output
+
       - name: Print sarif results
         id: output
         run: cat results.sarif snyk.sarif 2>/dev/null
-
-      - run: cat terraform-scanner-runtask-action.log
-        name: Scan results output
