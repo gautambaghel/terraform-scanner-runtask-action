@@ -73,3 +73,6 @@ jobs:
       - name: Print sarif results
         id: output
         run: cat results.sarif snyk.sarif 2>/dev/null
+
+      - run: cat terraform-scanner-runtask-action.log
+        name: Scan results output
