@@ -49,12 +49,6 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - run: |
-          echo "The job_id is: $GITHUB_JOB"
-          echo "The repo is: $GITHUB_ACTION_REPOSITORY"
-          echo "The base ref is: $GITHUB_REPOSITORY"
-        name: env vars
-
       - name: Test Local Action
         id: test-action
         uses: ./
