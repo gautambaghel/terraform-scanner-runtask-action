@@ -33798,7 +33798,6 @@ async function scan(task_result_callback_url, access_token) {
     process.env.PRISMA_API_URL &&
     process.env.GITHUB_REPOSITORY
   ) {
-    console.log(`Hello -> ${process.env.GITHUB_REPOSITORY}`)
     cmdBuilder = cmdBuilder.concat(
       `-e BC_API_KEY="${process.env.PRISMA_CLOUD_TOKEN}" -e PRISMA_API_URL="${process.env.PRISMA_API_URL}" -e REPO_ID="${process.env.GITHUB_REPOSITORY}" `
     )
