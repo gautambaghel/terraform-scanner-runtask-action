@@ -33704,6 +33704,7 @@ async function server() {
           // Send the results back to Terraform Cloud
           await scan(task_result_callback_url, access_token)
         } else if (req.body.stage === 'post_plan') {
+          console.log(`Hello -> ${process.env.GITHUB_REPOSITORY}`)
           // Process the run task request
           // Documentation - https://www.terraform.io/cloud-docs/api-docs/run-tasks-integration#request-body
           const {
