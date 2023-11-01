@@ -49,13 +49,12 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Local Action
-        id: test-action
-        uses: ./
-        with:
-          ngrok_domain: ${{ secrets.NGROK_DOMAIN }}
-          ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
-          tfc_runtask_hmac_key: ${{ secrets.TFC_RUNTASK_HMAC }}
+      #  Test the GitHub Action - same definition as the action.yml file
+      - run: docker run --net=host --name "terraform-scanner-runtask-action" --detach -e NGROK_AUTHTOKEN=${{ secrets.NGROK_TOKEN }} ngrok/ngrok:latest http --domain=${{ secrets.NGROK_DOMAIN }} 3000
+        shell: bash
+      - run: |
+          env PORT=3000 env HMAC_KEY=${{ secrets.TFC_RUNTASK_HMAC }} node dist/index.js > terraform-scanner-runtask-action.log 2>&1 &   
+        shell: bash
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           PRISMA_API_URL: ${{ secrets.PRISMA_API_URL }}
@@ -69,6 +68,9 @@ jobs:
           organization: 'tfc-integration-sandbox'
           workspace: 'vulnerable-ec2'
           token: ${{ secrets.TFC_API_TOKEN }}
+
+      - run: cat terraform-scanner-runtask-action.log
+        name: Scan results output
 
       - name: Print sarif results
         id: output
