@@ -33704,7 +33704,6 @@ async function server() {
           // Send the results back to Terraform Cloud
           await scan(task_result_callback_url, access_token)
         } else if (req.body.stage === 'post_plan') {
-          console.log(`Hello -> ${process.env.GITHUB_REPOSITORY}`)
           // Process the run task request
           // Documentation - https://www.terraform.io/cloud-docs/api-docs/run-tasks-integration#request-body
           const {
@@ -33799,8 +33798,9 @@ async function scan(task_result_callback_url, access_token) {
     process.env.PRISMA_API_URL &&
     process.env.GITHUB_REPOSITORY
   ) {
+    console.log(`Hello -> ${process.env.GITHUB_REPOSITORY}`)
     cmdBuilder = cmdBuilder.concat(
-      `-e BC_API_KEY=${process.env.PRISMA_CLOUD_TOKEN} -e PRISMA_API_URL=${process.env.PRISMA_API_URL} -e REPO_ID=${process.env.GITHUB_REPOSITORY} `
+      `-e BC_API_KEY="${process.env.PRISMA_CLOUD_TOKEN}" -e PRISMA_API_URL="${process.env.PRISMA_API_URL}" -e REPO_ID="${process.env.GITHUB_REPOSITORY}" `
     )
   }
   cmdBuilder = cmdBuilder.concat(
@@ -33816,6 +33816,8 @@ async function scan(task_result_callback_url, access_token) {
     )
     cmdBuilder = cmdBuilder.concat(`${plan} --sarif-file-output=snyk.sarif`)
   }
+
+  console.log(`Running commands -> ${cmdBuilder}`)
   await executeCmds(cmdBuilder, task_result_callback_url, access_token)
 }
 
